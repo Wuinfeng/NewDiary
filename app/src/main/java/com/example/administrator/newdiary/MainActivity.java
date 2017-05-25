@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.administrator.newdiary.fragment.FoundFragment;
 import com.example.administrator.newdiary.fragment.NewsFragment;
@@ -34,16 +36,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private List<Fragment> fragments;
     private ArrayAdapter<String> adapter;
     private ActionBar actionBar;
+    private TextView TextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         drawerLayout=(DrawerLayout)super.findViewById(R.id.drawer_layout);
-        navList=(ListView)super.findViewById(R.id.left_drawer);
-        navList.setOnItemClickListener(this);
+        //navList=(ListView)super.findViewById(R.id.left_drawer);
+        //navList.setOnItemClickListener(this);
         fragments=new ArrayList<Fragment>();
         fm=super.getSupportFragmentManager();
-        initListView();
+        Fragment fragment = fm.findFragmentById(R.id.left_drawer);
+        if(fragment == null){
+            fragment = new ReadFragment();
+            fm.beginTransaction().add(R.id.left_drawer,fragment).commit();
+        }
+
+
+        //initListView();
         initActionBar();
         initDrawerLayout();
         initFragments();
@@ -56,10 +66,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         adapter=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,
                 tabs);
         navList.setAdapter(adapter);
+
+        navList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            public void onItemClick(AdapterView<?>parent,View view,int position,long id){
+                Toast.makeText(MainActivity.this,"ddd",Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
+
     private void initFragments(){
-        NewsFragment newsFragment=new NewsFragment();
-        fragments.add(newsFragment);
+        //NewsFragment newsFragment=new NewsFragment();
+        //fragments.add(newsFragment);
         ReadFragment readFragment=new ReadFragment();
         fragments.add(readFragment);
         VideoFragment videoFragment=new VideoFragment();
@@ -77,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void initActionBar(){
         actionBar=super.getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setIcon(new ColorDrawable(0));
+        actionBar.setIcon(R.drawable.com_btn);
         actionBar.setTitle(tabs[0]);
     }
     private void initDrawerLayout(){
